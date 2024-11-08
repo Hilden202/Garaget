@@ -19,8 +19,8 @@ namespace ParkingManagementSystem
                 string[] vehicleTypes = { "car", "bus", "mc" };
                 vehicleType = vehicleTypes[random.Next(vehicleTypes.Length)];
                 Console.WriteLine("Slumpmässigt fordonstyp: " + vehicleType);
-
             }
+
             if (vehicleType.ToLower() == "car" || vehicleType.ToLower() == "bil")
             {
                 string regNumber = RequestRegistrationNumber("Bilen");
@@ -30,6 +30,7 @@ namespace ParkingManagementSystem
                 bool isElectric = RequestIfElectric();
 
                 Car car = new Car(regNumber, vehicleColor, isElectric);
+
                 garage.AddVehicle(car);
 
                 CheckinVehicleToList(regNumber);
@@ -45,6 +46,7 @@ namespace ParkingManagementSystem
                 int passengerCount = RequestNumberOfPassengers();
 
                 Bus bus = new Bus(regNumber, vehicleColor, passengerCount);
+
                 garage.AddVehicle(bus);
 
                 CheckinVehicleToList(regNumber);
@@ -77,7 +79,7 @@ namespace ParkingManagementSystem
             if (string.IsNullOrWhiteSpace(regNumber))
             {
                 Console.WriteLine();
-                Vehicle vehicle = CheckoutRandomVehicleFromList(garage);
+                IVehicle vehicle = CheckoutRandomVehicleFromList(garage);
 
                 if (vehicle != null)
                 {
@@ -100,7 +102,7 @@ namespace ParkingManagementSystem
 
             if (registeredVehicles.Contains(regNumber))
             {
-                Vehicle vehicle = garage.GetVehicleByRegNumber(regNumber);
+                IVehicle vehicle = garage.GetVehicleByRegNumber(regNumber);
 
                 if (vehicle != null)
                 {
@@ -306,14 +308,14 @@ namespace ParkingManagementSystem
             }
         }
 
-        public static Vehicle CheckoutRandomVehicleFromList(Garage garage)
+        public static IVehicle CheckoutRandomVehicleFromList(Garage garage)
         {
             if (registeredVehicles.Count > 0)
             {
                 Random random = new Random();
                 string randomRegNumber = registeredVehicles[random.Next(registeredVehicles.Count)];
 
-                Vehicle vehicle = garage.GetVehicleByRegNumber(randomRegNumber);
+                IVehicle vehicle = garage.GetVehicleByRegNumber(randomRegNumber);
 
                 if (vehicle != null && garage.RemoveVehicle(randomRegNumber))
                 {

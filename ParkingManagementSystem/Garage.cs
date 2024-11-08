@@ -1,29 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ParkingManagementSystem
 {
     public class Garage
     {
-        private List<List<Vehicle>> parkingSpaces = new List<List<Vehicle>>();
+        private List<List<IVehicle>> parkingSpaces = new List<List<IVehicle>>();
         private double availableSpaces;
-
-        private List<Vehicle> vehicles = new List<Vehicle>();
+        private List<IVehicle> vehicles = new List<IVehicle>();
 
         public Garage(double numberOfParkingSpaces)
         {
             availableSpaces = numberOfParkingSpaces;
 
-            // Kolla tomma platser
+            // Lägg till tomma platser
             for (int i = 0; i < numberOfParkingSpaces; i++)
             {
-                parkingSpaces.Add(new List<Vehicle>());
+                parkingSpaces.Add(new List<IVehicle>());
             }
         }
 
-        public void AddVehicle(Vehicle vehicle)
+        public void AddVehicle(IVehicle vehicle)
         {
-
             if (vehicle is Car)
             {
                 if (availableSpaces >= 1)
@@ -39,15 +38,15 @@ namespace ParkingManagementSystem
             }
             else if (vehicle is Mc)
             {
-                List<Vehicle> halfOccupiedSpace = parkingSpaces.Find(space => space.Count == 1 && space[0] is Mc);
+                List<IVehicle> halfOccupiedSpace = parkingSpaces.Find(space => space.Count == 1 && space[0] is Mc);
                 if (halfOccupiedSpace != null)
                 {
-                    halfOccupiedSpace.Add(vehicle); // Lägg till andra motorcykeln i samma plats
-                    availableSpaces -= 0.5; // samma som availableSpaces = availableSpaces - 0.5;
+                    halfOccupiedSpace.Add(vehicle);
+                    availableSpaces -= 0.5;
                 }
                 else if (availableSpaces >= 0.5)
                 {
-                    parkingSpaces.Find(space => space.Count == 0)?.Add(vehicle); // Lägg till i en ny ledig plats
+                    parkingSpaces.Find(space => space.Count == 0)?.Add(vehicle);
                     availableSpaces -= 0.5;
                 }
                 else
@@ -60,9 +59,9 @@ namespace ParkingManagementSystem
             {
                 if (availableSpaces >= 2)
                 {
-                    List<Vehicle> emptySpace = parkingSpaces.Find(space => space.Count == 0);
-                    emptySpace?.Add(vehicle); // Buss använder två platser
-                    parkingSpaces[parkingSpaces.IndexOf(emptySpace) + 1].Add(vehicle); // Placera på nästa plats också
+                    List<IVehicle> emptySpace = parkingSpaces.Find(space => space.Count == 0);
+                    emptySpace?.Add(vehicle);
+                    parkingSpaces[parkingSpaces.IndexOf(emptySpace) + 1].Add(vehicle);
                     availableSpaces -= 2;
                 }
                 else
@@ -73,19 +72,20 @@ namespace ParkingManagementSystem
             }
             vehicles.Add(vehicle);
         }
+
         public bool RemoveVehicle(string regNumber)
         {
             bool removed = false;
 
             for (int i = 0; i < parkingSpaces.Count; i++)
             {
-                List<Vehicle> space = parkingSpaces[i];
-                Vehicle vehicleToRemove = space.FirstOrDefault(v => v.RegistrationNumber.Equals(regNumber, StringComparison.OrdinalIgnoreCase)); // lambda-funktion
+                List<IVehicle> space = parkingSpaces[i];
+                IVehicle vehicleToRemove = space.FirstOrDefault(v => v.RegistrationNumber.Equals(regNumber, StringComparison.OrdinalIgnoreCase));
                 if (vehicleToRemove != null)
                 {
                     space.Remove(vehicleToRemove);
                     availableSpaces += GetSpaceOccupied(vehicleToRemove);
-                    vehicles.Remove(vehicleToRemove); //todo nytt
+                    vehicles.Remove(vehicleToRemove);
                     removed = true;
 
                     if (vehicleToRemove is Bus)
@@ -93,48 +93,35 @@ namespace ParkingManagementSystem
                         // Ta bort från nästa plats också
                         if (i + 1 < parkingSpaces.Count)
                         {
-                            List<Vehicle> nextSpace = parkingSpaces[i + 1];
-                            Vehicle busInNextSpace = nextSpace.FirstOrDefault(v => v.RegistrationNumber.Equals(regNumber, StringComparison.OrdinalIgnoreCase));
+                            List<IVehicle> nextSpace = parkingSpaces[i + 1];
+                            IVehicle busInNextSpace = nextSpace.FirstOrDefault(v => v.RegistrationNumber.Equals(regNumber, StringComparison.OrdinalIgnoreCase));
                             if (busInNextSpace != null)
                             {
                                 nextSpace.Remove(busInNextSpace);
-                                availableSpaces += GetSpaceOccupied(busInNextSpace);
                             }
                         }
                     }
+                    break;
                 }
             }
 
-            if (removed)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return removed;
         }
 
-        public Vehicle GetVehicleByRegNumber(string regNumber)
+        public IVehicle GetVehicleByRegNumber(string regNumber)
         {
             return vehicles.FirstOrDefault(v => v.RegistrationNumber == regNumber);
         }
 
-        private double GetSpaceOccupied(Vehicle vehicle)
+        private double GetSpaceOccupied(IVehicle vehicle)
         {
             if (vehicle is Car)
-            {
                 return 1.0;
-            }
             else if (vehicle is Mc)
-            {
                 return 0.5;
-            }
             else if (vehicle is Bus)
-            {
-                return 1.0;
-            }
-            return 0.0; // Om fordonet är av okänt typ
+                return 2.0;
+            return 0.0;
         }
 
         public int ShowParkingSpaces()
@@ -150,10 +137,10 @@ namespace ParkingManagementSystem
 
             for (int i = 0; i < parkingSpaces.Count; i++)
             {
-                List<Vehicle> vehiclesOnSpace = parkingSpaces[i];
+                List<IVehicle> vehiclesOnSpace = parkingSpaces[i];
                 if (vehiclesOnSpace.Count > 0)
                 {
-                    foreach (Vehicle vehicle in vehiclesOnSpace)
+                    foreach (IVehicle vehicle in vehiclesOnSpace)
                     {
                         Console.Write(" Plats " + (i + 1) + ":\t");
                         string vehicleInfo = vehicle.Type + "\t" + vehicle.RegistrationNumber + "\t" + vehicle.Color + "\t";
