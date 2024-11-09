@@ -46,7 +46,7 @@ namespace ParkingManagementSystem
             for (int i = 0; i < 7; i++) // 5 för feeden + titel och separator
             {
                 Console.SetCursorPosition(startX, startY + i);
-                Console.WriteLine("                           "); // Rensa hela raden
+                Console.WriteLine("            "); // Rensa hela raden
             }
 
             Console.SetCursorPosition(startX, startY); // Flytta tillbaka markören till toppen av feeden
@@ -54,7 +54,7 @@ namespace ParkingManagementSystem
             Console.WriteLine("Senaste Nytt");
             Console.ResetColor();
             Console.SetCursorPosition(startX, startY + 1);
-            Console.WriteLine("===========================");
+            Console.WriteLine("=============================");
 
             for (int i = 0; i < messages.Count; i++)
             {

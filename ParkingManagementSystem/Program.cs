@@ -11,19 +11,37 @@ class Program
         Garage garage = new Garage(numberOfParkingSpaces);
         Feed feed = new Feed();
 
+        int usedRows = garage.ShowParkingSpaces();
+        int menuRow = usedRows + 3;
+        
+        //// Starta klockan i en separat tråd för att undvika konflikt med annan output
+        //Thread clockThread = new Thread(() =>
+        //{
+        //    while (true)
+        //    {
+
+        //        Console.SetCursorPosition(79, 0);
+        //        Console.ForegroundColor = ConsoleColor.Yellow;
+        //        Console.WriteLine("Tid: " + DateTime.Now.ToString("HH: mm: ss"));
+        //        Console.ResetColor();
+        //        Console.SetCursorPosition(0, menuRow + 1);
+        //        Console.WriteLine("                                                        ");
+        //        Thread.Sleep(1000);
+        //    }
+        //});
+
+        //clockThread.IsBackground = true;
+        //clockThread.Start();
+
         while (true)
         {
             Console.Clear();
-
-            int usedRows = garage.ShowParkingSpaces();
-            int menuRow = usedRows + 3;
+            garage.ShowParkingSpaces();
 
             Console.SetCursorPosition(0, 0);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write("[Q] Avsluta");
             Console.ResetColor();
-
-            feed.DisplayRecentFeeds();
 
             Console.SetCursorPosition(0, menuRow);
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -34,6 +52,9 @@ class Program
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("[2] Checka ut ett fordon:");
             Console.ResetColor();
+
+            feed.DisplayRecentFeeds();
+            Console.SetCursorPosition(0, menuRow + 1);
 
             ConsoleKeyInfo key = Console.ReadKey(true);
 
@@ -53,5 +74,6 @@ class Program
                     return;
             }
         }
+
     }
 }
