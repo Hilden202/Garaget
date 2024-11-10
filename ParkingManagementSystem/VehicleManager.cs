@@ -74,7 +74,7 @@ namespace ParkingManagementSystem
         public static void CheckoutVehicle(Garage garage, Feed feed)
         {
             Console.Write("\nAnge registreringsnummer på det fordon du vill checka ut: ");
-            string regNumber = Console.ReadLine().ToUpper();
+            string regNumber = Console.ReadLine()?.ToUpper(); //todo ?
 
             if (string.IsNullOrWhiteSpace(regNumber))
             {
