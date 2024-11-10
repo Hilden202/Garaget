@@ -37,6 +37,7 @@ namespace ParkingManagementSystem
 
                 feed.AddMessage($"Incheckad: Bil: {regNumber}", ConsoleColor.Green); // Lägg till meddelande i feed
             }
+
             else if (vehicleType.ToLower() == "bus" || vehicleType.ToLower() == "buss")
             {
                 string regNumber = RequestRegistrationNumber("bussen");
@@ -53,6 +54,7 @@ namespace ParkingManagementSystem
 
                 feed.AddMessage($"Incheckad: Buss: {regNumber}", ConsoleColor.Green);
             }
+
             else if (vehicleType.ToLower() == "mc" || vehicleType.ToLower() == "motorcyckel" || vehicleType.ToLower() == "motorbike" || vehicleType.ToLower() == "motorcycle")
             {
                 string regNumber = RequestRegistrationNumber("Motocyckeln");
@@ -179,24 +181,21 @@ namespace ParkingManagementSystem
         public static string RequestVehicleColor(string vehicleType)
         {
             Random random = new Random();
-            string[] vehicleColors = { "RÖD", "BLÅ", "GRÖN", "GUL", "SVART" };
+            string[] colors = { "RÖD", "BLÅ", "GRÖN", "GUL", "SVART" };
 
             while (true)
             {
-                Console.Write("\nAnge färg på " + vehicleType + ":");
+                Console.Write("\nAnge färg på " + vehicleType + ": ");
                 string vehicleColor = Console.ReadLine();
 
                 if (string.IsNullOrWhiteSpace(vehicleColor))
                 {
-                    vehicleColor = vehicleColors[random.Next(vehicleColors.Length)];
+                    vehicleColor = colors[random.Next(colors.Length)];
                     Console.WriteLine("Slumpmässigt färg valt: " + vehicleColor);
                     return vehicleColor;
                 }
-                if (vehicleColor.ToLower() == "röd" ||
-                    vehicleColor.ToLower() == "blå" ||
-                    vehicleColor.ToLower() == "grön" ||
-                    vehicleColor.ToLower() == "gul" ||
-                    vehicleColor.ToLower() == "svart")
+
+                if (Array.Exists(colors, color => color.Equals(vehicleColor.ToUpper())))
                 {
                     Console.WriteLine("Färg vald: " + vehicleColor);
                     return vehicleColor.ToUpperInvariant();
@@ -205,7 +204,6 @@ namespace ParkingManagementSystem
                 {
                     Console.WriteLine("Ogiltig färg. Ange en giltig färg.");
                 }
-
             }
         }
 

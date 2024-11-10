@@ -117,10 +117,13 @@ namespace ParkingManagementSystem
         {
             if (vehicle is Car)
                 return 1.0;
+
             else if (vehicle is Mc)
                 return 0.5;
+
             else if (vehicle is Bus)
                 return 2.0;
+
             return 0.0;
         }
 
