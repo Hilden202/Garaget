@@ -3,6 +3,7 @@ namespace ParkingManagementSystem
 {
     public interface IVehicle
     {
+        public DateTime ArrivalTime { get; set; }
         string RegistrationNumber { get; set; }
         string Color { get; set; }
         string Type { get; }
@@ -10,6 +11,7 @@ namespace ParkingManagementSystem
 
     public abstract class Vehicle : IVehicle
     {
+        public DateTime ArrivalTime { get; set; }
         public string RegistrationNumber { get; set; }
         public string Color { get; set; }
         public abstract string Type { get; }

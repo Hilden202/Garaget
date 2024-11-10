@@ -39,6 +39,8 @@ class Program
             Console.ResetColor();
 
             feed.DisplayRecentFeeds();
+            garage.UpdateTotalIncome();
+
             Console.SetCursorPosition(0, menuRow + 1);
 
             ConsoleKeyInfo key = Console.ReadKey(true);

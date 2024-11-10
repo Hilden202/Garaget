@@ -20,7 +20,7 @@ namespace ParkingManagementSystem
 
         public void AddMessage(string message, ConsoleColor color = ConsoleColor.White)
         {
-            if (messages.Count >= 5)
+            if (messages.Count >= 10) // 15 meddelanden
             {
                 messages.RemoveAt(messages.Count - 1); // Ta bort det äldsta meddelandet
             }
@@ -29,7 +29,7 @@ namespace ParkingManagementSystem
 
         public void DisplayMessages()
         {
-            foreach (FeedMessage feedMessage in messages) // byter håll
+            foreach (FeedMessage feedMessage in messages)
             {
                 Console.ForegroundColor = feedMessage.Color;
                 Console.WriteLine(feedMessage.Message);
@@ -39,14 +39,14 @@ namespace ParkingManagementSystem
 
         public void DisplayRecentFeeds()
         {
-            int startX = 65; // Position till höger
-            int startY = 0;  // Position 5 rader ner
+            int startX = 65;
+            int startY = 0;
 
-            // Rensa tidigare feed (anpassa rensningen för upp till 5 meddelanden)
-            for (int i = 0; i < 7; i++) // 5 för feeden + titel och separator
+            // Rensa tidigare feed (anpassa rensningen för upp till 15 meddelanden)
+            for (int i = 0; i < 17; i++)
             {
                 Console.SetCursorPosition(startX, startY + i);
-                Console.WriteLine("            "); // Rensa hela raden
+                Console.WriteLine("            ");
             }
 
             Console.SetCursorPosition(startX, startY); // Flytta tillbaka markören till toppen av feeden
@@ -54,7 +54,7 @@ namespace ParkingManagementSystem
             Console.WriteLine("Senaste Nytt");
             Console.ResetColor();
             Console.SetCursorPosition(startX, startY + 1);
-            Console.WriteLine("=============================");
+            Console.Write(new string('=', 44));
 
             for (int i = 0; i < messages.Count; i++)
             {

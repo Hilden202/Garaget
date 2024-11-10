@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 
 namespace ParkingManagementSystem
 {
@@ -31,11 +32,12 @@ namespace ParkingManagementSystem
 
                 Car car = new Car(regNumber, vehicleColor, isElectric);
 
-                garage.AddVehicle(car);
+                car.ArrivalTime = DateTime.Now;
+
+                garage.AddVehicle(car, feed);
 
                 CheckinVehicleToList(regNumber);
 
-                feed.AddMessage($"Incheckad: Bil: {regNumber}", ConsoleColor.Green); // Lägg till meddelande i feed
             }
 
             else if (vehicleType.ToLower() == "bus" || vehicleType.ToLower() == "buss")
@@ -48,11 +50,12 @@ namespace ParkingManagementSystem
 
                 Bus bus = new Bus(regNumber, vehicleColor, passengerCount);
 
-                garage.AddVehicle(bus);
+                bus.ArrivalTime = DateTime.Now;
+
+                garage.AddVehicle(bus, feed);
 
                 CheckinVehicleToList(regNumber);
 
-                feed.AddMessage($"Incheckad: Buss: {regNumber}", ConsoleColor.Green);
             }
 
             else if (vehicleType.ToLower() == "mc" || vehicleType.ToLower() == "motorcyckel" || vehicleType.ToLower() == "motorbike" || vehicleType.ToLower() == "motorcycle")
@@ -65,56 +68,67 @@ namespace ParkingManagementSystem
 
                 Mc mc = new Mc(regNumber, vehicleColor, brandChoice);
 
-                garage.AddVehicle(mc);
+                mc.ArrivalTime = DateTime.Now;
+
+                garage.AddVehicle(mc, feed);
 
                 CheckinVehicleToList(regNumber);
-
-                feed.AddMessage($"Incheckad: Mc: {regNumber}", ConsoleColor.Green);
             }
         }
 
         public static void CheckoutVehicle(Garage garage, Feed feed)
         {
             Console.Write("\nAnge registreringsnummer på det fordon du vill checka ut: ");
-            string regNumber = Console.ReadLine()?.ToUpper(); //todo ?
+            string regNumber = Console.ReadLine()?.ToUpper();
 
+            IVehicle vehicle;
             if (string.IsNullOrWhiteSpace(regNumber))
             {
                 Console.WriteLine();
-                IVehicle vehicle = CheckoutRandomVehicleFromList(garage);
+                vehicle = CheckoutRandomVehicleFromList(garage);
 
                 if (vehicle != null)
                 {
-                    feed.AddMessage($"Utcheckad: {vehicle.Type}: {vehicle.RegistrationNumber}", ConsoleColor.Red);
+                    double parkedMinutes = (DateTime.Now - vehicle.ArrivalTime).TotalMinutes; // todo
+                    double totalCost = Math.Round(parkedMinutes * 1.5, 2); // todo
+
+                    Garage.totalIncome += totalCost; // todo
+                    Garage.totalIncome = Math.Round(Garage.totalIncome, 2); // todo
+
+                    feed.AddMessage($"Utcheckad: {vehicle.Type} - {vehicle.RegistrationNumber} - intäkt: {totalCost} Kr", ConsoleColor.Red); // todo
                 }
                 else
                 {
                     Console.WriteLine("Inga fordon tillgängliga för slumpmässig utcheckning.");
                 }
-                Console.ReadKey();
+                Thread.Sleep(1500);
                 return;
             }
 
             if (regNumber.Length != 6)
             {
                 Console.WriteLine("Ogiltigt registreringsnummer, ange 6 tecken.");
-                Console.ReadKey();
+                Thread.Sleep(1500);
                 return;
             }
 
             if (registeredVehicles.Contains(regNumber))
             {
-                IVehicle vehicle = garage.GetVehicleByRegNumber(regNumber);
+                vehicle = garage.GetVehicleByRegNumber(regNumber);
 
                 if (vehicle != null)
                 {
-                    feed.AddMessage($"Utcheckad: {vehicle.Type}: {vehicle.RegistrationNumber}", ConsoleColor.Red);
-                    bool removed = garage.RemoveVehicle(regNumber);
+                    double parkedMinutes = (DateTime.Now - vehicle.ArrivalTime).TotalMinutes; // todo
+                    double totalCost = Math.Round(parkedMinutes * 1.5, 2); // todo
+
+
+                    bool removed = garage.RemoveVehicle(regNumber); // todo
 
                     if (removed)
                     {
                         registeredVehicles.Remove(regNumber);
                         Console.WriteLine($"Fordon med registreringsnummer {regNumber} har checkats ut.");
+                        feed.AddMessage($"Utcheckad: {vehicle.Type} - {vehicle.RegistrationNumber} - intäkt {totalCost} Kr", ConsoleColor.Red); // todo
                     }
                     else
                     {
@@ -130,7 +144,7 @@ namespace ParkingManagementSystem
             {
                 Console.WriteLine($"Fordon med registreringsnummer {regNumber} är inte incheckat.");
             }
-            Console.ReadKey();
+            Thread.Sleep(1500);
         }
 
         public static string RequestRegistrationNumber(string vehicleType)
@@ -319,12 +333,7 @@ namespace ParkingManagementSystem
                 {
                     registeredVehicles.Remove(randomRegNumber);
 
-                    // Beräkna parkeringstiden i minuter och kostnaden
-                    //double parkedMinutes = (DateTime.Now - vehicle.StartTime).TotalMinutes;
-                    //double totalCost = Math.Round(parkedMinutes * 1.5, 2); // Runda av till två decimaler
-
                     Console.WriteLine($"Slumpmässigt fordon med registreringsnummer {randomRegNumber} har checkats ut.");
-                    //Console.WriteLine($"Parkeringstid: {parkedMinutes:F2} minuter, Totalkostnad: {totalCost} SEK");
 
                     return vehicle;  // Returnera det slumpmässiga fordonet
                 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace ParkingManagementSystem
 {
@@ -9,6 +10,16 @@ namespace ParkingManagementSystem
         private List<List<IVehicle>> parkingSpaces = new List<List<IVehicle>>();
         private double availableSpaces;
         private List<IVehicle> vehicles = new List<IVehicle>();
+
+        public static double totalIncome = 0;
+
+        public void UpdateTotalIncome()
+        {
+            Console.SetCursorPosition(87, 0);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Total intäkt {totalIncome} Kr");
+            Console.ResetColor();
+        }
 
         public Garage(double numberOfParkingSpaces)
         {
@@ -21,14 +32,18 @@ namespace ParkingManagementSystem
             }
         }
 
-        public void AddVehicle(IVehicle vehicle)
+        public void AddVehicle(IVehicle vehicle, Feed feed)
         {
+            bool added = false;
+            string parkingTime = DateTime.Now.ToString("HH:mm:ss");
+
             if (vehicle is Car)
             {
                 if (availableSpaces >= 1)
                 {
                     parkingSpaces.Find(space => space.Count == 0)?.Add(vehicle);
                     availableSpaces -= 1;
+                    added = true;
                 }
                 else
                 {
@@ -43,11 +58,13 @@ namespace ParkingManagementSystem
                 {
                     halfOccupiedSpace.Add(vehicle);
                     availableSpaces -= 0.5;
+                    added = true;
                 }
                 else if (availableSpaces >= 0.5)
                 {
                     parkingSpaces.Find(space => space.Count == 0)?.Add(vehicle);
                     availableSpaces -= 0.5;
+                    added = true;
                 }
                 else
                 {
@@ -63,6 +80,7 @@ namespace ParkingManagementSystem
                     emptySpace?.Add(vehicle);
                     parkingSpaces[parkingSpaces.IndexOf(emptySpace) + 1].Add(vehicle);
                     availableSpaces -= 2;
+                    added = true;
                 }
                 else
                 {
@@ -70,7 +88,11 @@ namespace ParkingManagementSystem
                     Thread.Sleep(1500);
                 }
             }
+            if (added)
+            {
             vehicles.Add(vehicle);
+            feed.AddMessage($"Incheckad: {vehicle.Type} - {vehicle.RegistrationNumber} - Ankomst: {parkingTime}", ConsoleColor.Green);
+            }
         }
 
         public bool RemoveVehicle(string regNumber)
