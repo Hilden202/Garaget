@@ -181,7 +181,9 @@ namespace ParkingManagementSystem
                         {
                             vehicleInfo += "Antal Passagerare: " + bus.NumberOfPassenger;
                         }
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine(vehicleInfo);
+                        Console.ResetColor();
                         usedRows++;
                     }
                 }
