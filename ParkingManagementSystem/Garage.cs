@@ -90,8 +90,8 @@ namespace ParkingManagementSystem
             }
             if (added)
             {
-            vehicles.Add(vehicle);
-            feed.AddMessage($"Incheckad: {vehicle.Type} - {vehicle.RegistrationNumber} - Ankomst: {parkingTime}", ConsoleColor.Green);
+                vehicles.Add(vehicle);
+                feed.AddMessage($"Incheckad: {vehicle.Type}  {vehicle.RegistrationNumber}  Ankomst: {parkingTime}", ConsoleColor.Green);
             }
         }
 
@@ -168,7 +168,9 @@ namespace ParkingManagementSystem
                     foreach (IVehicle vehicle in vehiclesOnSpace)
                     {
                         Console.Write(" Plats " + (i + 1) + ":\t");
-                        string vehicleInfo = vehicle.Type + "\t" + vehicle.RegistrationNumber + "\t" + vehicle.Color + "\t";
+                        VehicleManager.WriteColorText(vehicle.Color);
+                        string vehicleInfo = "\t" + vehicle.Type + "\t" + vehicle.RegistrationNumber + "\t";
+
                         if (vehicle is Car car)
                         {
                             vehicleInfo += "Eldriven: " + (car.ElectricCar ? "Ja" : "Nej");
@@ -181,9 +183,8 @@ namespace ParkingManagementSystem
                         {
                             vehicleInfo += "Antal Passagerare: " + bus.NumberOfPassenger;
                         }
-                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine(vehicleInfo);
-                        Console.ResetColor();
+
                         usedRows++;
                     }
                 }

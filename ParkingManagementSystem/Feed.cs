@@ -20,7 +20,7 @@ namespace ParkingManagementSystem
 
         public void AddMessage(string message, ConsoleColor color = ConsoleColor.White)
         {
-            if (messages.Count >= 10) // 15 meddelanden
+            if (messages.Count >= 10) // 10 meddelanden
             {
                 messages.RemoveAt(messages.Count - 1); // Ta bort det äldsta meddelandet
             }

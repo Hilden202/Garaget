@@ -95,7 +95,7 @@ namespace ParkingManagementSystem
                     Garage.totalIncome += totalCost; // todo
                     Garage.totalIncome = Math.Round(Garage.totalIncome, 2); // todo
 
-                    feed.AddMessage($"Utcheckad: {vehicle.Type} - {vehicle.RegistrationNumber} - intäkt: {totalCost} Kr", ConsoleColor.Red); // todo
+                    feed.AddMessage($"Utcheckad: {vehicle.Type}  {vehicle.RegistrationNumber}  intäkt: {totalCost} Kr", ConsoleColor.Red); // todo
                 }
                 else
                 {
@@ -195,7 +195,7 @@ namespace ParkingManagementSystem
         public static string RequestVehicleColor(string vehicleType)
         {
             Random random = new Random();
-            string[] colors = { "RÖD", "BLÅ", "GRÖN", "GUL", "SVART" };
+            string[] colors = { "RÖD", "BLÅ", "GRÖN", "GUL", "SVART", "VIT" };
 
             while (true)
             {
@@ -205,13 +205,15 @@ namespace ParkingManagementSystem
                 if (string.IsNullOrWhiteSpace(vehicleColor))
                 {
                     vehicleColor = colors[random.Next(colors.Length)];
-                    Console.WriteLine("Slumpmässigt färg valt: " + vehicleColor);
+                    Console.WriteLine("Slumpmässigt färg valt: ");
+                    WriteColorText(vehicleColor);
                     return vehicleColor;
                 }
 
                 if (Array.Exists(colors, color => color.Equals(vehicleColor.ToUpper())))
                 {
-                    Console.WriteLine("Färg vald: " + vehicleColor);
+                    Console.WriteLine("Färg vald: ");
+                    WriteColorText(vehicleColor);
                     return vehicleColor.ToUpperInvariant();
                 }
                 else
@@ -219,6 +221,46 @@ namespace ParkingManagementSystem
                     Console.WriteLine("Ogiltig färg. Ange en giltig färg.");
                 }
             }
+        }
+
+        public static void WriteColorText(string color)
+        {
+
+            if (color is "RÖD") // todo Gör om till en switch
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+
+            }
+            else if (color is "GUL")
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+
+            }
+            else if (color is "GRÖN")
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+
+            }
+            else if (color is "BLÅ")
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+
+            }
+            else if (color is "SVART")
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+
+            }
+            else if (color is "VIT")
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+
+            }
+
+            Console.Write(color);
+            Console.ForegroundColor = ConsoleColor.White;
+
+            //return color;
         }
 
         public static bool RequestIfElectric()
