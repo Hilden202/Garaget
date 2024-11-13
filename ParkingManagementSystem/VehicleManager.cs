@@ -74,6 +74,12 @@ namespace ParkingManagementSystem
 
                 CheckinVehicleToList(regNumber);
             }
+            else
+            {
+                Console.WriteLine("Ogiltigt fordon, ange  bil, buss eller mc.");
+            }
+            Thread.Sleep(1500);
+            return;
         }
 
         public static void CheckoutVehicle(Garage garage, Feed feed)
@@ -212,8 +218,8 @@ namespace ParkingManagementSystem
 
                 if (Array.Exists(colors, color => color.Equals(vehicleColor.ToUpper())))
                 {
-                    Console.WriteLine("Färg vald: ");
-                    WriteColorText(vehicleColor);
+                    //Console.WriteLine("Färg vald: ");
+                    //WriteColorText(vehicleColor);
                     return vehicleColor.ToUpperInvariant();
                 }
                 else
